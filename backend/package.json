@@ -19,6 +19,7 @@
   "homepage": "https://github.com/leuan/uss-leuan#readme",
   "dependencies": {
     "express": "^4.19.2",
+    "mongodb": "^6.6.1",
     "nodemon": "^3.1.0",
     "pino": "^9.0.0",
     "pino-http": "^10.1.0",

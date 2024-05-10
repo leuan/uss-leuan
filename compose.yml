@@ -2,6 +2,7 @@ services:
   uss-ui:
     build: ./frontend/.
     container_name: uss-ui
+    restart: always
     ports:
       - "3000:3000"
     depends_on:
@@ -12,10 +13,25 @@ services:
   uss-api:
     build: ./backend/.
     container_name: uss-api
+    restart: always
     environment:
       - NODE_ENV=production
+    depends_on:
+      - uss-db
     networks:
       - uss-network
 
+  uss-db:
+    container_name: uss-db
+    image: mongo:7.0.9
+    restart: always
+    networks:
+      - uss-network
+    volumes:
+      - mongo-data:/data/db
+
 networks:
   uss-network:
+
+volumes:
+  mongo-data:
