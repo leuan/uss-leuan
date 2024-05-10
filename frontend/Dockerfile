@@ -6,11 +6,14 @@ COPY . .
 RUN npm run build
 RUN npm prune --production
 
-FROM node:22-alpine3.19
-WORKDIR /app
-COPY --from=builder /app/build build/
-COPY --from=builder /app/node_modules node_modules/
-COPY package.json .
-EXPOSE 3000
-ENV NODE_ENV=production
-CMD [ "node", "build" ]
+FROM nginx:1.25.5-alpine3.19
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+
+COPY --from=builder /app/build .
+COPY --from=builder /app/static ./static
+
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]

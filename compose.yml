@@ -1,0 +1,21 @@
+services:
+  uss-ui:
+    build: ./frontend/.
+    container_name: uss-ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - uss-api
+    networks:
+      - uss-network
+
+  uss-api:
+    build: ./backend/.
+    container_name: uss-api
+    environment:
+      - NODE_ENV=production
+    networks:
+      - uss-network
+
+networks:
+  uss-network:
