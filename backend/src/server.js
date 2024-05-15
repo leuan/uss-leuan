@@ -3,6 +3,7 @@ const loggingConfig = require("./config/logging");
 const log = require("pino")(loggingConfig);
 const db = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
+const router = require("./routes/index");
 
 const app = express();
 const port = 8080;
@@ -12,15 +13,8 @@ const init = async () => {
   await db.connect();
 };
 
-//routes
-app.get("/api", async (req, res, next) => {
-  const projectsCollection = await db.Projects.getCollection();
-  await projectsCollection.insertOne({ test: "test" });
-  let err = new Error("test");
-  err.statusCode = 403;
-  err.status = "forbidden";
-  next(err);
-});
+//router
+app.use(router);
 
 //post middlewares
 app.use(errorHandler);
