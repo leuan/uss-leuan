@@ -13,6 +13,10 @@ const init = async () => {
   await db.connect();
 };
 
+//pre middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 //router
 app.use(router);
 
