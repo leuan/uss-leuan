@@ -26,8 +26,8 @@ let db;
 
 const collections = {
   Projects: {
-    getCollection: async () => {
-      return await db.collection("projects");
+    getCollection: () => {
+      return db.collection("projects");
     },
   },
 };
