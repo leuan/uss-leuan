@@ -56,6 +56,13 @@ services:
     networks:
       - uss-network
 
+  uss-keycloak:
+    build: ./keycloak/.
+    container_name: uss-keycloak
+    env_file:
+      - .env.prod
+    networks:
+      - uss-network
 networks:
   uss-network:
 
