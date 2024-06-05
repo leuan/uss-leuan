@@ -4,6 +4,7 @@ const log = require("pino")(loggingConfig);
 const db = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
 const router = require("./routes/index");
+const verifyToken = require("./middleware/keycloak");
 
 const app = express();
 const port = 8080;
@@ -16,7 +17,7 @@ const init = async () => {
 //pre middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(verifyToken);
 //router
 app.use(router);
 
