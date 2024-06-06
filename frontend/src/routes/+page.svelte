@@ -3,26 +3,57 @@
 	import { onMount } from 'svelte';
 	import MdiAdd from '~icons/mdi/add';
 	import { goto } from '$app/navigation';
+	import { Paginator } from '@skeletonlabs/skeleton';
 
-	let answer = {};
 	let projects = [];
 
-	onMount(async () => {
-		const res = await fetchWithToken('http://localhost:8080/api/v1/projects', {
+	let paginationSettings = {
+		page: 0,
+		limit: 5,
+		size: 0,
+		amounts: [1, 2, 5, 10]
+	};
+
+	const fetchProjects = async (page = 0, limit = 5) => {
+		const params = new URLSearchParams({ page: (page + 1).toString(), limit: limit.toString() });
+
+		const res = await fetchWithToken(`http://localhost:8080/api/v1/projects?${params.toString()}`, {
 			method: 'GET'
 		});
-		projects = (await res.json()).results;
-	});
+		const response = await res.json();
+		projects = response.results;
+
+		paginationSettings = {
+			page: paginationSettings.page,
+			limit: paginationSettings.limit,
+			size: response.total,
+			amounts: [1, 2, 5, 10]
+		};
+	};
+	onMount(fetchProjects);
+
+	const onPageChange = () => {
+		fetchProjects(paginationSettings.page, paginationSettings.limit);
+	};
+
+	const onAmountChange = () => {
+		fetchProjects(paginationSettings.page, paginationSettings.limit);
+	};
 </script>
 
-<h1 class="h1 mx-7 mb-14 mt-7">
-	<span
-		class="from-error-500 to-primary-500 bg-gradient-to-br box-decoration-clone bg-clip-text text-transparent"
-	>
-		Projects.
-	</span>
-</h1>
-{#if projects.length === 0}
+<div class="flex items-center justify-between">
+	<h1 class="h1 mx-7 mb-14 mt-7">
+		<span
+			class="from-error-500 to-primary-500 bg-gradient-to-br box-decoration-clone bg-clip-text text-transparent"
+		>
+			Projects.
+		</span>
+	</h1>
+	{#if paginationSettings.size > 0}
+		<a href="/create" class="btn btn-icon variant-filled-primary mr-8"><MdiAdd /></a>
+	{/if}
+</div>
+{#if paginationSettings.size === 0}
 	<div class="flex h-4/5 w-full flex-col items-center justify-center">
 		<a href="/create" class="btn btn-icon variant-filled-primary mb-8"><MdiAdd /></a>
 		<p class="text-surface-500 text-xl">There are no projects. Start by creating one.</p>
@@ -53,6 +84,15 @@
 			</section>
 		</div>
 	{/each}
+
+	<Paginator
+		class="mx-5 my-3"
+		on:page={onPageChange}
+		on:amount={onAmountChange}
+		bind:settings={paginationSettings}
+		showFirstLastButtons={false}
+		showPreviousNextButtons={true}
+	/>
 {/if}
 
 <style lang="postcss">
