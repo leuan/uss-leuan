@@ -28,7 +28,7 @@ const publicMethods = {
     log.info("Target URL: " + targetUrl);
 
     const scanId = (await zaproxy.ajaxSpider.scan({ url: targetUrl })).scan;
-    console.log(`Started scan with ID: ${scanId}`);
+    log.info(`Started scan with ID: ${scanId}`);
 
     return res.status(200).json({ scanId: scanId });
   },

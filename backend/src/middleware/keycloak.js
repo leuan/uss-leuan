@@ -10,9 +10,6 @@ const getKeycloakPublicKey = async () => {
     return publicKey;
   } else {
     try {
-      console.log(
-        `${process.env.API_KC_URL}/idp/realms/${process.env.API_REALM_NAME}/protocol/openid-connect/certs`
-      );
       const response = await axios.get(
         `${process.env.API_KC_URL}/realms/${process.env.API_REALM_NAME}/protocol/openid-connect/certs`
       );
@@ -33,7 +30,8 @@ const verifyToken = async (req, res, next) => {
     const err = new Error("Missing token");
     err.statusCode = 401;
   }
-  const token = authHeader.split(" ")[1];
+  const token = authHeader?.split(" ")[1];
+  console.log(authHeader);
   const publicKey = await getKeycloakPublicKey();
 
   if (!publicKey) {

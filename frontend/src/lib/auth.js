@@ -4,27 +4,10 @@ import { keycloakConfig } from '$lib/kcConfig';
 
 const keycloakInstance = writable(null);
 const user = writable(null);
-
-const mockKeycloak = {
-	token: "-",
-	updateToken: async (x) => {
-		return;
-	}
-}
-
-const mockUserProfile = {
-	username: "test"
-}
+let keycloak;
 
 const initKeycloak = async () => {
-	//use mocks for dev mode
-	if (import.meta.env.MODE === 'development') {
-		keycloakInstance.set(mockKeycloak);
-		user.set(mockUserProfile)
-		return;
-	}
-	
-	const keycloak = new Keycloak(keycloakConfig);
+	keycloak = new Keycloak(keycloakConfig);
 	try {
 		const authenticated = await keycloak.init({
 			onLoad: 'check-sso',
@@ -43,6 +26,11 @@ const initKeycloak = async () => {
 	}
 };
 
-const fetchWithToken = async (url, data) => {};
+const logout = async () => {
+	return keycloak.logout();
+}
 
-export { initKeycloak, keycloakInstance, user };
+const account = async () => {
+	return keycloak.accountManagement();
+}
+export { initKeycloak, keycloakInstance, user, logout, account};

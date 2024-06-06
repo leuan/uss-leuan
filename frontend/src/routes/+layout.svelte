@@ -1,8 +1,17 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
-	import { user, initKeycloak } from '$lib/auth';
+	import {
+		AppShell,
+		AppBar,
+		ProgressRadial,
+		initializeStores,
+		Toast
+	} from '@skeletonlabs/skeleton';
+	import { user, initKeycloak, logout, account } from '$lib/auth';
 	import { onMount } from 'svelte';
+	import MdiAccount from '~icons/mdi/account';
+	import MdiLogoutVariant from '~icons/mdi/logout-variant';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -19,29 +28,12 @@
 
 	onMount(async () => {
 		await initKeycloak();
+		userProfile = get(user);
+		keycloak = get(user);
 		isLoading = false;
 	});
-
-	user.subscribe((value) => {
-		userProfile = value;
-	});
-
-	user.subscribe((value) => {
-		keycloak = value;
-	});
-
-	async function handleLogout() {
-		if (keycloak) {
-			try {
-				await keycloak.logout();
-			} catch (err) {
-				console.error('Logout failed', err);
-			}
-		} else {
-			console.error('Keycloak instance is not available');
-		}
-	}
-
+	initializeStores();
+	
 	hljs.registerLanguage('xml', xml); // for HTML
 	hljs.registerLanguage('css', css);
 	hljs.registerLanguage('javascript', javascript);
@@ -55,47 +47,40 @@
 </script>
 
 <!-- App Shell -->
-<AppShell>
-	<svelte:fragment slot="header">
-		<!-- App Bar -->
-		<AppBar>
-			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">USSc</strong>
-			</svelte:fragment>
-			<svelte:fragment slot="trail">
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/EXqV7W8MtY"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Discord
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://twitter.com/SkeletonUI"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Twitter
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/skeletonlabs/skeleton"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
-			</svelte:fragment>
-		</AppBar>
-	</svelte:fragment>
-	<!-- Page Route Content -->
-	{#if isLoading}
-		<p>Loading...</p>
-	{:else if userProfile}
-		<p>Welcome, {userProfile.username}</p>
-		<button on:click={handleLogout}>Logout</button>
+{#if isLoading}
+	<div class="flex h-full w-full items-center justify-center">
+		<ProgressRadial />
+	</div>
+{:else}
+	<Toast/>
+	<AppShell>
+		<svelte:fragment slot="header">
+			<!-- App Bar -->
+			<!-- {#if isLoading} -->
+			<AppBar>
+				<svelte:fragment slot="lead">
+					<strong class="strong">
+						<span
+							class="bg-gradient-to-br from-pink-500 to-violet-500 box-decoration-clone bg-clip-text text-transparent"
+							>Welcome, {userProfile?.firstName}</span
+						>
+					</strong>
+					<strong class="text-xl uppercase"></strong>
+				</svelte:fragment>
+				<svelte:fragment slot="trail">
+					<button
+						type="button"
+						on:click={account}
+						class="btn-icon variant-gradient-success-error bg-gradient-to-br"><MdiAccount /></button
+					>
+					<button type="button" on:click={logout} class="btn-icon variant-filled-surface"
+						><MdiLogoutVariant /></button
+					>
+				</svelte:fragment>
+			</AppBar>
+		</svelte:fragment>
+		<!-- Page Route Content -->
+
 		<slot></slot>
-	{/if}
-</AppShell>
+	</AppShell>
+{/if}
