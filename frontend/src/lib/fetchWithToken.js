@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { keycloakInstance } from './auth';
+import { keycloakInstance } from '$lib/auth';
 
 const fetchWithToken = async (url, options = {}) => {
     const keycloak = get(keycloakInstance);

@@ -37,6 +37,13 @@ const publicMethods = {
 
   postProject: async (req, res, next) => {
     const { name, zapUrl } = req.body;
+    try {
+      new URL(zapUrl);
+    } catch (_) {
+      const err = new Error("Invalid url");
+      err.statusCode = 400;
+      return next(err);
+    }
 
     const projectToSave = {
       name,
@@ -63,7 +70,6 @@ const publicMethods = {
       objId = ObjectId.createFromHexString(projectId);
     } catch (e) {
       log.error(e);
-      log.info("invalid id");
       return res.status(200).json({ result: null });
     }
 
