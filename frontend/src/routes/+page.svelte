@@ -2,6 +2,7 @@
 	import { fetchWithToken } from '$lib/fetchWithToken';
 	import { onMount } from 'svelte';
 	import MdiAdd from '~icons/mdi/add';
+	import MdiSearch from '~icons/mdi/search';
 	import { goto } from '$app/navigation';
 	import { Paginator } from '@skeletonlabs/skeleton';
 
@@ -14,8 +15,14 @@
 		amounts: [1, 2, 5, 10]
 	};
 
+	let query = '';
+
 	const fetchProjects = async (page = 0, limit = 5) => {
-		const params = new URLSearchParams({ page: (page + 1).toString(), limit: limit.toString() });
+		const params = new URLSearchParams({
+			page: (page + 1).toString(),
+			limit: limit.toString(),
+			name: query
+		});
 
 		const res = await fetchWithToken(`http://localhost:8080/api/v1/projects?${params.toString()}`, {
 			method: 'GET'
@@ -59,6 +66,31 @@
 		<p class="text-surface-500 text-xl">There are no projects. Start by creating one.</p>
 	</div>
 {:else}
+	<div class="flex flex-col items-center">
+		<div class="input-group input-group-divider my-3 max-w-screen-md grid-cols-[auto_1fr_auto]">
+			<div class="input-group-shim"><MdiSearch /></div>
+			<input
+				type="search"
+				on:keydown={() => {
+					(event) => {
+						if (event.key === 'Enter') {
+							fetchProjects(paginationSettings.page, paginationSettings.limit);
+						}
+					};
+				}}
+				bind:value={query}
+				placeholder="Search..."
+			/>
+			<button
+				class="variant-filled-secondary"
+				on:click={() => {
+					fetchProjects(paginationSettings.page, paginationSettings.limit);
+				}}
+			>
+				Submit
+			</button>
+		</div>
+	</div>
 	{#each projects as project}
 		<div
 			tabindex="0"
