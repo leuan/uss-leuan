@@ -1,8 +1,6 @@
 const loggingConfig = require("../config/logging");
 const log = require("pino")(loggingConfig);
 const DB = require("../config/db");
-const { ObjectId } = require("bson");
-
 const publicMethods = {
   getWithPagination: async (page, limit, name) => {
     //no of items to skip
@@ -44,6 +42,10 @@ const publicMethods = {
       zapUrl: data.zapUrl,
       createdAt: new Date().toISOString(),
       user: user?.preferred_username,
+      zap: {
+        lastSpiderScan: null,
+        scanId: null,
+      },
     };
 
     try {
@@ -61,6 +63,20 @@ const publicMethods = {
       const projectsDB = DB.Projects.getCollection();
       const project = await projectsDB.findOne({ _id: id });
       return project;
+    } catch (e) {
+      e.status = "DB Error";
+      throw e;
+    }
+  },
+
+  updateById: async (id, values) => {
+    const updateValues = {
+      $set: values,
+    };
+
+    try {
+      const projectsDB = DB.Projects.getCollection();
+      await projectsDB.updateOne({ _id: id}, updateValues);
     } catch (e) {
       e.status = "DB Error";
       throw e;

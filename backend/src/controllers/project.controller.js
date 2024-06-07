@@ -1,7 +1,7 @@
 const loggingConfig = require("../config/logging");
 const log = require("pino")(loggingConfig);
-const { ObjectId } = require("bson");
 const projectService = require("../services/project.service");
+const objIdValidator = require("../utils/objectIdValidator.utils");
 
 const publicMethods = {
   getProjects: async (req, res, next) => {
@@ -50,9 +50,8 @@ const publicMethods = {
     log.info(projectId);
     let objId;
     try {
-      objId = ObjectId.createFromHexString(projectId);
+      objId = objIdValidator(projectId);
     } catch (e) {
-      e.statusCode = 404;
       next(e);
     }
 

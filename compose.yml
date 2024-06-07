@@ -35,6 +35,7 @@ services:
 
   uss-zap:
     image: ghcr.io/zaproxy/zaproxy:stable
+    mem_limit: 2g
     container_name: uss-zap
     ports:
       - "8090:8090"
