@@ -2,6 +2,7 @@
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { fetchWithToken } from '$lib/fetchWithToken';
 	import MdiCreation from '~icons/mdi/creation';
+	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
 	const toastStore = getToastStore();
 
@@ -71,7 +72,8 @@
 	};
 </script>
 
-<div class="flex w-full flex-row justify-center">
+<Breadcrumb/>
+<div class="flex w-full flex-column justify-center">
 	<div class="flex-gap-4 ml-8 flex max-w-screen-md flex-col">
 		<h1 class="h1 mb-14 mt-7">
 			<span
