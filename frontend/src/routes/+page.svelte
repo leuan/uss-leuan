@@ -24,7 +24,7 @@
 			name: query
 		});
 
-		const res = await fetchWithToken(`http://localhost:8080/api/v1/projects?${params.toString()}`, {
+		const res = await fetchWithToken(`/api/v1/projects?${params.toString()}`, {
 			method: 'GET'
 		});
 		const response = await res.json();

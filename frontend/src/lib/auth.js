@@ -7,6 +7,29 @@ const user = writable(null);
 let keycloak;
 
 const initKeycloak = async () => {
+	if (import.meta.env.MODE === 'development') {
+		const keycloakMock = {
+			logout: async () => {
+				return true;
+			},
+			accountManagement: async () => {
+				return true;
+			},
+			updateToken: async (x) => {
+				return true;
+			},
+			token: '-'
+		};
+
+		const mockUserProfile = {
+			firstName: 'MOCK FIRST NAME'
+		};
+
+		keycloak = keycloakMock;
+		keycloakInstance.set(keycloak);
+		user.set(mockUserProfile);
+		return;
+	}
 	keycloak = new Keycloak(keycloakConfig);
 	try {
 		const authenticated = await keycloak.init({
@@ -28,9 +51,9 @@ const initKeycloak = async () => {
 
 const logout = async () => {
 	return keycloak.logout();
-}
+};
 
 const account = async () => {
 	return keycloak.accountManagement();
-}
-export { initKeycloak, keycloakInstance, user, logout, account};
+};
+export { initKeycloak, keycloakInstance, user, logout, account };

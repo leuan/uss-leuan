@@ -1,7 +1,7 @@
 const loggingConfig = require("../config/logging");
 const log = require("pino")(loggingConfig);
-const DB = require("../config/db");
 const { ObjectId } = require("bson");
+const projectService = require("../services/project.service");
 
 const publicMethods = {
   getProjects: async (req, res, next) => {
@@ -9,28 +9,14 @@ const publicMethods = {
     const limit = parseInt(req.query.limit) || 10;
     const name = req.query.name || "";
 
-    //no of items to skip
-    const skip = (page - 1) * limit;
-
-    const query = name ? { name: { $regex: name, $options: "i" } } : {};
-
     try {
-      const projectsDB = DB.Projects.getCollection();
-      const totalItems = await projectsDB.countDocuments(query);
-      const items = await projectsDB
-        .find(query)
-        .skip(skip)
-        .limit(limit)
-        .toArray();
-      return res.status(200).json({
-        results: items,
-        total: totalItems,
+      const response = await projectService.getWithPagination(
         page,
         limit,
-        totalPages: Math.ceil(totalItems / limit),
-      });
+        name
+      );
+      return res.status(200).json(response);
     } catch (e) {
-      e.status = "DB Error";
       next(e);
     }
   },
@@ -45,18 +31,15 @@ const publicMethods = {
       return next(err);
     }
 
-    const projectToSave = {
-      name,
-      zapUrl,
-      createdAt: new Date().toISOString(),
-    };
-
+    if (!name) {
+      const err = new Error("Invalid or missing name");
+      err.statusCode = 400;
+      return next(err);
+    }
     try {
-      const projectsDB = DB.Projects.getCollection();
-      const projectId = (await projectsDB.insertOne(projectToSave)).insertedId;
+      const projectId = await projectService.create({ name, zapUrl }, req.user);
       return res.status(200).json({ projectId });
     } catch (e) {
-      e.status = "DB Error";
       next(e);
     }
   },
@@ -69,18 +52,16 @@ const publicMethods = {
     try {
       objId = ObjectId.createFromHexString(projectId);
     } catch (e) {
-      log.error(e);
-      return res.status(200).json({ result: null });
+      e.statusCode = 404;
+      next(e);
     }
 
     try {
-      const projectsDB = DB.Projects.getCollection();
-      const project = await projectsDB.findOne({ _id: objId });
+      const project = await projectService.getById(objId);
       return res.status(200).json({
         result: project,
       });
     } catch (e) {
-      e.status = "DB Error";
       next(e);
     }
   },

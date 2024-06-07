@@ -46,7 +46,7 @@
 			zapUrl
 		};
 
-		const res = await fetchWithToken('http://localhost:8080/api/v1/projects', {
+		const res = await fetchWithToken('/api/v1/projects', {
 			method: 'POST',
 			body: JSON.stringify(project),
 			headers: {
