@@ -17,6 +17,6 @@
     {/each}
     {#if query.get('projectId')}
 	<li class="crumb-separator" aria-hidden="true">&rsaquo;</li>
-	<li>{customName || query.get('projectId')}</li>
+	<li class="capitalize">{customName || query.get('projectId')}</li>
     {/if}
 </ol>
