@@ -45,6 +45,9 @@ const publicMethods = {
       zap: {
         lastSpiderScan: null,
         scanId: null,
+        lastActiveScan: null,
+        activeScanFinished: null,
+        activeScanId: null,
       },
     };
 

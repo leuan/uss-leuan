@@ -44,6 +44,41 @@ const publicMethods = {
       next(e);
     }
   },
+
+  getZapActiveScan: async (req, res, next) => {
+    const { projectId } = req.params;
+    let objId;
+    try {
+      objId = objIdValidator(projectId);
+    } catch (e) {
+      next(e);
+    }
+
+    try {
+      const results = await zapService.getActiveScan(objId);
+      return res.status(200).json(results);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  postZapActiveScan: async (req, res, next) => {
+    const { projectId } = req.body;
+
+    let objId;
+    try {
+      objId = objIdValidator(projectId);
+    } catch (e) {
+      next(e);
+    }
+
+    try {
+      const scanId = await zapService.runActiveScan(objId);
+      return res.status(200).json({ scanId: scanId });
+    } catch (e) {
+      next(e);
+    }
+  }
 };
 
 module.exports = { ...publicMethods };

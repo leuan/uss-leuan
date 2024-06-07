@@ -30,6 +30,11 @@ const collections = {
       return db.collection("projects");
     },
   },
+  ZapAlerts: {
+    getCollection: () => {
+      return db.collection("zapAlerts");
+    },
+  },
 };
 
 const publicMethods = {

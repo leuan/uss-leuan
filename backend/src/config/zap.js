@@ -7,14 +7,18 @@ const config = {
     },
   },
   spiderConfig: {
-    maxChilden: 5,
+    maxchilden: 5,
     recurse: true,
-    subtreeOnly: false,
+    subtreeonly: false,
   },
   ajaxSpiderConfig: {
-    inScope: false,
-    subtreeOnly: true,
+    inscope: false,
+    subtreeonly: true,
   },
+  activeScanConfig: {
+    recurse: true,
+    inScopeonly: true,
+  }
 };
 
 module.exports = config;
