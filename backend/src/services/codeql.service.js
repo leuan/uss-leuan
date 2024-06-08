@@ -1,7 +1,7 @@
 const loggingConfig = require("../config/logging");
 const log = require("pino")(loggingConfig);
 const DB = require("../config/db");
-const codeqlParser = require("../utils/codeqlParser");
+const codeqlParser = require("../utils/codeql-parser.utils.js");
 const path = require("path");
 const projectService = require("./project.service");
 
