@@ -17,7 +17,7 @@
 
 	let loading = true;
 	let project = {};
-	let currentTile = 0;
+	let currentTile = 1;
 
 	const fetchProject = async () => {
 		const res = await fetchWithToken(`/api/v1/projects/${projectId}`);
@@ -37,7 +37,7 @@
 		<ProgressRadial />
 	</div>
 {:else}
-	<div>
+	<div class="mb-6">
 		<Breadcrumb customName={project?.name} />
 		<!-- <p>{JSON.stringify(project)}</p> -->
 		<div class="mx-7 mb-1 mt-3 flex items-center gap-4">
@@ -49,12 +49,16 @@
 				</span>
 			</h1>
 			<button class="btn btn-icon variant-filled-secondary"><MdiEdit /></button>
-			<a class="btn btn-icon variant-filled-warning" href={project.zapUrl}><MdiLink /></a>
+			<a class="btn btn-icon variant-filled-warning" href={project.zapUrl} rel="external"><MdiLink /></a>
 		</div>
 		<div class="text-surface-400 ml-8 flex items-center gap-2">
 			<p>URL: {project.zapUrl}</p>
 			<p>-</p>
-			<p>Created at {new Date(project.createdAt).toLocaleDateString()}</p>
+			<p>Created: {new Date(project.createdAt).toLocaleDateString()}</p>
+			<p>-</p>
+			<p>Last spider scan: {project.zap.lastSpiderScan ? new Date(project.zap.lastSpiderScan).toLocaleDateString() : 'never'}</p>
+			<p>-</p>
+			<p>Last active scan: {project.zap.lastActiveScan ? new Date(project.zap.lastActiveScan).toLocaleDateString() : 'never'}</p>
 		</div>
 		<div class="ml-7"></div>
 	</div>
@@ -83,13 +87,13 @@
 			</AppRailTile>
 		</AppRail>
 
-		<div class="">
+		<div class="flex-1 min-h-96">
 			{#if currentTile === 0}
-				<SastScan projectId={project._id} />
+				<SastScan project={project} />
 			{:else if currentTile === 1}
-				<IastScan projectId={project._id} />
+				<IastScan project={project} refresh={fetchProject}/>
 			{:else if currentTile === 2}
-				<ScaScan projectId={project._id} />
+				<ScaScan project={project} />
 			{/if}
 		</div>
 	</div>

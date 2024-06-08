@@ -5,7 +5,6 @@ const {
   apiConfig,
   spiderConfig,
   ajaxSpiderConfig,
-  activeScanConfig,
 } = require("../config/zap");
 const ZapClient = require("zaproxy");
 const projectService = require("./project.service");
@@ -90,7 +89,7 @@ const publicMethods = {
     let scanId;
     try {
       log.info(project.zapUrl);
-      await zap.ascan.setOptionThreadPerHost({integer: 2});
+      await zap.ascan.setOptionThreadPerHost({ integer: 2 });
       scanId = (await zap.ascan.scan({ url: project.zapUrl }))?.scan;
     } catch (e) {
       e.status = "Zap Active Scan Error";
@@ -136,24 +135,20 @@ const publicMethods = {
           const alertsDB = DB.ZapAlerts.getCollection();
           alertsDB.insertOne({
             projectId: project._id,
-            createdAt: (new Date()).toISOString(),
+            createdAt: new Date().toISOString(),
             alerts: results.alerts,
           });
 
-          await projectService.updateById(
-            projectId,
-            {
-              zap: {
-                ...project.zap,
-                activeScanFinished: true,
-              },
-            }
-          );
+          await projectService.updateById(projectId, {
+            zap: {
+              ...project.zap,
+              activeScanFinished: true,
+            },
+          });
 
           return {
-            complete: true,
-            results: results.alerts,
-            status: scanStatus,
+            complete: false,
+            status: 99,
           };
         }
         return { complete: false, status: scanStatus };
@@ -165,13 +160,11 @@ const publicMethods = {
 
     try {
       const alertsDB = DB.ZapAlerts.getCollection();
-      const alerts = (
-        await alertsDB.findOne(
-          { projectId: project._id },
-          { sort: { createdAt: -1 } }
-        )
-      ).alerts;
-      return { complete: true, results: alerts, status: 100 };
+      const alerts = await alertsDB.findOne(
+        { projectId: project._id },
+        { sort: { createdAt: -1 } }
+      );
+      return { complete: true, results: alerts.alerts, status: 100 };
     } catch (e) {
       e.status = "DB Error";
       throw e;

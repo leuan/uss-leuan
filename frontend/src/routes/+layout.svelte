@@ -21,6 +21,7 @@
 	import css from 'highlight.js/lib/languages/css';
 	import javascript from 'highlight.js/lib/languages/javascript';
 	import typescript from 'highlight.js/lib/languages/typescript';
+	import plaintext from 'highlight.js/lib/languages/plaintext'
 
 	let userProfile;
 	let isLoading = true;
@@ -38,6 +39,7 @@
 	hljs.registerLanguage('css', css);
 	hljs.registerLanguage('javascript', javascript);
 	hljs.registerLanguage('typescript', typescript);
+	hljs.registerLanguage('plaintext', plaintext);
 	storeHighlightJs.set(hljs);
 
 	// Floating UI for Popups

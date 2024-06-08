@@ -1,5 +1,5 @@
 <script>
-    export let projectId='';
+    export let project={};
 </script>
 <p>SAST Scan</p>
-<p>{projectId}</p>
+<p>{project._id}</p>
