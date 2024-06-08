@@ -44,7 +44,7 @@ const publicMethods = {
       user: user?.preferred_username,
       zap: {
         lastSpiderScan: null,
-        scanId: null,
+        spiderScanId: null,
         lastActiveScan: null,
         activeScanFinished: null,
         activeScanId: null,
