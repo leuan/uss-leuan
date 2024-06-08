@@ -1,7 +1,7 @@
 const loggingConfig = require("../config/logging");
 const log = require("pino")(loggingConfig);
 const DB = require("../config/db");
-const codeqlParser = require("../utils/codeql-parser.utils.js");
+const dcParser = require("../utils/dc-parser.utils.js");
 const path = require("path");
 const projectService = require("./project.service");
 
@@ -9,37 +9,37 @@ const publicMethods = {
   import: async (projectId) => {
     const project = await projectService.getById(projectId);
 
-    const results = await codeqlParser(
-      `/app/codeql-output/${project.scanFileName}.sarif`
+    const results = await dcParser(
+      `/app/dc-output/${project.scanFileName}.json`
     );
 
     const reportToSave = {
-      alerts: results,
+      dependencies: results,
       importDate: new Date().toISOString(),
       projectId: project._id,
     };
 
     try {
       await projectService.updateById(projectId, {
-        lastCodeqlImport: reportToSave.importDate,
+        lastDependencyCheckImport: reportToSave.importDate,
       });
-      const codeqlDB = await DB.CodeqlReports.getCollection();
-      codeqlDB.insertOne(reportToSave);
+      const dcDB = await DB.DependencyCheckReports.getCollection();
+      dcDB.insertOne(reportToSave);
     } catch (e) {
       e.statusCode = 500;
       throw e;
     }
   },
 
-  getAlerts: async (projectId) => {
+  getDependencies: async (projectId) => {
     try {
-      const codeqlDB = await DB.CodeqlReports.getCollection();
-      const result = await codeqlDB.findOne(
+      const dcDB = await DB.DependencyCheckReports.getCollection();
+      const result = await dcDB.findOne(
         { projectId: projectId },
         { sort: { createdAt: -1 } }
       );
 
-      return result.alerts;
+      return result.dependencies;
     } catch (e) {
       e.statusCode = 500;
       throw e;

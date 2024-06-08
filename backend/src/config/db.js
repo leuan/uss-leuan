@@ -40,6 +40,11 @@ const collections = {
       return db.collection("codeqlReports");
     },
   },
+  DependencyCheckReports: {
+    getCollection: () => {
+      return db.collection("dcReports");
+    },
+  },
 };
 
 const publicMethods = {
