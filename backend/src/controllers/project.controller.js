@@ -36,7 +36,13 @@ const publicMethods = {
       err.statusCode = 400;
       return next(err);
     }
-    
+
+    if (!scanFileName) {
+      const err = new Error("Invalid or missing name");
+      err.statusCode = 400;
+      return next(err);
+    }
+
     try {
       const projectId = await projectService.create(
         { name, zapUrl, scanFileName },
@@ -64,6 +70,52 @@ const publicMethods = {
       return res.status(200).json({
         result: project,
       });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  postEditProject: async (req, res, next) => {
+    const { projectId } = req.params;
+    const { name, zapUrl, scanFileName } = req.body;
+
+    log.info(projectId);
+    let objId;
+    try {
+      objId = objIdValidator(projectId);
+    } catch (e) {
+      next(e);
+    }
+
+    let valuesToChange = {};
+
+    if (zapUrl) {
+      try {
+        new URL(zapUrl);
+      } catch (_) {
+        const err = new Error("Invalid url");
+        err.statusCode = 400;
+        return next(err);
+      }
+
+      valuesToChange.zapUrl = zapUrl;
+    }
+
+    if (name) {
+      valuesToChange.name = name;
+    }
+
+    if (scanFileName) {
+      valuesToChange.scanFileName = scanFileName;
+    }
+
+    try {
+      const projectId = await projectService.updateById(objId, {
+        name,
+        zapUrl,
+        scanFileName,
+      });
+      return res.status(200).json({ message: "Project modified successfully!" });
     } catch (e) {
       next(e);
     }
