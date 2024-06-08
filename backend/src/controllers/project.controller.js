@@ -22,7 +22,7 @@ const publicMethods = {
   },
 
   postProject: async (req, res, next) => {
-    const { name, zapUrl } = req.body;
+    const { name, zapUrl, scanFileName } = req.body;
     try {
       new URL(zapUrl);
     } catch (_) {
@@ -36,8 +36,12 @@ const publicMethods = {
       err.statusCode = 400;
       return next(err);
     }
+    
     try {
-      const projectId = await projectService.create({ name, zapUrl }, req.user);
+      const projectId = await projectService.create(
+        { name, zapUrl, scanFileName },
+        req.user
+      );
       return res.status(200).json({ projectId });
     } catch (e) {
       next(e);

@@ -34,6 +34,7 @@ const publicMethods = {
     data = {
       name: "",
       zapUrl: "",
+      scanFileName: "",
     },
     user
   ) => {
@@ -49,6 +50,9 @@ const publicMethods = {
         activeScanFinished: null,
         activeScanId: null,
       },
+      scanFileName: scanFileName,
+      lastCodeqlImport: null,
+      lastDependencyCheckImport: null,
     };
 
     try {
@@ -79,7 +83,7 @@ const publicMethods = {
 
     try {
       const projectsDB = DB.Projects.getCollection();
-      await projectsDB.updateOne({ _id: id}, updateValues);
+      await projectsDB.updateOne({ _id: id }, updateValues);
     } catch (e) {
       e.status = "DB Error";
       throw e;
