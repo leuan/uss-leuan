@@ -27,7 +27,7 @@ const publicMethods = {
 
     if (spiderType !== "crawler" && spiderType !== "ajaxSpider") {
       const e = new Error("Invalid spider type");
-      e.statusCode("401");
+      e.statusCode = 401;
       next(e);
     }
 

@@ -50,7 +50,7 @@ const publicMethods = {
         activeScanFinished: null,
         activeScanId: null,
       },
-      scanFileName: scanFileName,
+      scanFileName: data.scanFileName,
       lastCodeqlImport: null,
       lastDependencyCheckImport: null,
     };
