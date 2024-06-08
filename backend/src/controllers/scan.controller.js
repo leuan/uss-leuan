@@ -3,6 +3,7 @@ const log = require("pino")(loggingConfig);
 const zapService = require("../services/zap.service");
 const objIdValidator = require("../utils/objectIdValidator.utils");
 const codeqlService = require("../services/codeql.service");
+const dcService = require("../services/dc.service");
 
 const publicMethods = {
   getZapSpiderScan: async (req, res, next) => {
@@ -115,6 +116,44 @@ const publicMethods = {
       next(e);
     }
   },
+
+  postDCImport: async (req, res, next) => {
+    const { projectId } = req.body;
+
+    let objId;
+    try {
+      objId = objIdValidator(projectId);
+    } catch (e) {
+      next(e);
+    }
+
+    try {
+      await dcService.import(objId);
+      return res.status(200).json({ message: "Imported successfully!" });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getDCDependencies: async (req, res, next) => {
+    const { projectId } = req.params;
+    let objId;
+    try {
+      objId = objIdValidator(projectId);
+    } catch (e) {
+      next(e);
+    }
+
+    try {
+      const dependencies = await dcService.getDependencies(objId);
+      return res.status(200).json({ results: dependencies });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+
+  
 };
 
 module.exports = { ...publicMethods };
