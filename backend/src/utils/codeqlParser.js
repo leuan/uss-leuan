@@ -23,7 +23,7 @@ const parseCodeQl = async (path) => {
     const resultObject = {
       rule: rules[result.ruleId],
       detail: result.message.text,
-      location: `${result.locations[0].physicalLocation.artifactLocation.uri}: ${result.locations[0].physicalLocation.region.startLine}: ${result.locations[0].physicalLocation.region.startColumn}:${result.locations[0].physicalLocation.region.endColumn}`,
+      location: `${result.locations[0].physicalLocation.artifactLocation.uri}: ${result.locations[0].physicalLocation.region.startLine}:${result.locations[0].physicalLocation.region.startColumn}:${result.locations[0].physicalLocation.region.endColumn}`,
     };
     results.push(resultObject);
   });
