@@ -35,6 +35,11 @@ const collections = {
       return db.collection("zapAlerts");
     },
   },
+  CodeqlReports: {
+    getCollection: () => {
+      return db.collection("codeqlReports");
+    },
+  },
 };
 
 const publicMethods = {
