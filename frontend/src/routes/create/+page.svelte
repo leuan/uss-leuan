@@ -9,6 +9,7 @@
 	let name = '';
 	let zapUrl = '';
 	let urlValid = true;
+	let scanFileName = ''
 
 	const validateURL = (string) => {
 		let url;
@@ -42,9 +43,18 @@
 			return;
 		}
 
+		if (!scanFileName) {
+			toastStore.trigger({
+				message: 'You need to enter a scan name for your project!',
+				background: 'variant-filled-warning'
+			});
+			return;
+		}
+
 		const project = {
 			name,
-			zapUrl
+			zapUrl,
+			scanFileName
 		};
 
 		const res = await fetchWithToken('/api/v1/projects', {
@@ -93,13 +103,24 @@
 
 		<label class="label mb-3" for="zapURL">Deployment URL:</label>
 		<input
-			class="input mb-3"
+			class="input mb-6"
 			id="zapURL"
 			class:input-error={!urlValid}
 			on:keyup={checkField}
 			bind:value={zapUrl}
 			type="text"
 			placeholder="http://www.example.com"
+		/>
+
+		<label class="label mb-3" for="scanFileName">Scan file name (without extension):</label>
+		<input
+			class="input mb-3"
+			id="scanFileName"
+			class:input-error={!urlValid}
+			on:keyup={checkField}
+			bind:value={scanFileName}
+			type="text"
+			placeholder="my-scan"
 		/>
 
 		<button class="btn variant-filled-primary" on:click={handleSubmit}

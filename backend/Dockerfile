@@ -5,4 +5,4 @@ RUN npm install
 COPY . .
 WORKDIR /app/src
 EXPOSE 8080
-CMD [ "npm", "run", "dev" ]
+CMD [ "node", "server.js" ]
