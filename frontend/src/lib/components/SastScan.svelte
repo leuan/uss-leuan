@@ -98,8 +98,8 @@
 
 {#if !project.lastCodeqlImport}
 	<div class="flex h-full flex-col items-center justify-center gap-10">
-		<h1 class="h1 text-surface-400 justify-self-center">You need to import a CodeQL scan first.</h1>
-		<button class="btn variant-filled-secondary" on:click={importScan}>Import</button>
+		<h1 class="h1 text-surface-400 justify-self-center">You need to load a CodeQL scan first.</h1>
+		<button class="btn variant-filled-secondary" on:click={importScan}>Load</button>
 	</div>
 {:else}
 	<div class="">
@@ -132,7 +132,7 @@
 
 			<div>
 				<button class="btn variant-filled-primary mr-5" on:click={importScan}
-					><MdiDatabaseImport class="mr-1" />Import new scan</button
+					><MdiDatabaseImport class="mr-1" />Load new scan</button
 				>
 			</div>
 		</div>
@@ -153,8 +153,8 @@
 					</svelte:fragment>
 					<svelte:fragment slot="content">
 						<div class="ml-7">
-							<p class="mb-2 font-bold text-indigo-700">Score:</p>
-							<h1 class="h1">
+							<p class=" font-weight-100 ml-2  text-indigo-500">Score:</p>
+							<h1 class="h1 mb-3">
 								<span
 									class="text-ellipsis bg-gradient-to-br from-indigo-500 box-decoration-clone bg-clip-text capitalize text-transparent"
 									class:to-yellow-500={alert.rule.cvss < 4}

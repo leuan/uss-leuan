@@ -17,7 +17,7 @@
 
 	let loading = true;
 	let project = {};
-	let currentTile = 0;
+	let currentTile = 2;
 
 	const fetchProject = async () => {
 		const res = await fetchWithToken(`/api/v1/projects/${projectId}`);
@@ -93,7 +93,7 @@
 			{:else if currentTile === 1}
 				<IastScan project={project} refresh={fetchProject}/>
 			{:else if currentTile === 2}
-				<ScaScan project={project} />
+				<ScaScan project={project} refresh={fetchProject}/>
 			{/if}
 		</div>
 	</div>
