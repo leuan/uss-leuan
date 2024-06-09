@@ -15,7 +15,7 @@ const init = async () => {
 };
 
 //pre middlewares
-// app.use(verifyToken);
+app.use(verifyToken);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //router

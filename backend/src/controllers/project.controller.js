@@ -13,7 +13,8 @@ const publicMethods = {
       const response = await projectService.getWithPagination(
         page,
         limit,
-        name
+        name,
+        req.user
       );
       return res.status(200).json(response);
     } catch (e) {
@@ -67,9 +68,13 @@ const publicMethods = {
 
     try {
       const project = await projectService.getById(objId);
-      return res.status(200).json({
-        result: project,
-      });
+      if (project) {
+        return res.status(200).json({
+          result: project,
+        });
+      } else {
+        return res.status(404).json({ message: "Not found" });
+      }
     } catch (e) {
       next(e);
     }

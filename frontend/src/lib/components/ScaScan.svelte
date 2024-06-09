@@ -36,7 +36,7 @@
 	);
 
 	onMount(() => {
-		if (project.lastCodeqlImport) {
+		if (project.lastDependencyCheckImport) {
 			fetchDependencies();
 		}
 	});
