@@ -1,4 +1,5 @@
 <script>
+	import { goto } from '$app/navigation';
 	import ScaScan from './../../lib/components/ScaScan.svelte';
 	import SastScan from './../../lib/components/SastScan.svelte';
 	import MdiLink from '~icons/mdi/link';
@@ -11,18 +12,29 @@
 	import IastScan from '$lib/components/IastScan.svelte';
 	import { fetchWithToken } from '$lib/fetchWithToken';
 	import { onMount } from 'svelte';
-	import { AppRail, AppRailTile, ProgressRadial } from '@skeletonlabs/skeleton';
+	import { AppRail, AppRailTile, ProgressRadial, getToastStore} from '@skeletonlabs/skeleton';
 	const queryparams = $page.url.searchParams;
 	const projectId = queryparams.get('projectId');
-
+	const toastStore = getToastStore();
+	
 	let loading = true;
 	let project = {};
-	let currentTile = 2;
+	let currentTile = 0;
 
 	const fetchProject = async () => {
+		if (!projectId) {
+			await goto('/404');
+		}
 		const res = await fetchWithToken(`/api/v1/projects/${projectId}`);
 		if (!res.ok) {
-			//redirect to 404
+			if(res.status === 404) {
+				await goto('/404');
+				return;
+			}
+			toastStore.trigger({
+				message: `${res.status}: ${res.statusText}`,
+				background: 'variant-filled-error'
+			});
 			return;
 		}
 		project = (await res.json()).result;
@@ -39,7 +51,6 @@
 {:else}
 	<div class="mb-6">
 		<Breadcrumb customName={project?.name} />
-		<!-- <p>{JSON.stringify(project)}</p> -->
 		<div class="mx-7 mb-1 mt-3 flex items-center gap-4">
 			<h1 class="h1">
 				<span
@@ -48,7 +59,7 @@
 					{project.name}
 				</span>
 			</h1>
-			<button class="btn btn-icon variant-filled-secondary"><MdiEdit /></button>
+			<a class="btn btn-icon variant-filled-secondary" href={`/edit?projectId=${project._id}`}><MdiEdit /></a>
 			<a class="btn btn-icon variant-filled-warning" href={project.zapUrl} rel="external"><MdiLink /></a>
 		</div>
 		<div class="text-surface-400 ml-8 flex items-center gap-2">

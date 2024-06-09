@@ -110,12 +110,10 @@ const publicMethods = {
     }
 
     try {
-      const projectId = await projectService.updateById(objId, {
-        name,
-        zapUrl,
-        scanFileName,
-      });
-      return res.status(200).json({ message: "Project modified successfully!" });
+      await projectService.updateById(objId, valuesToChange);
+      return res
+        .status(200)
+        .json({ message: "Project modified successfully!" });
     } catch (e) {
       next(e);
     }

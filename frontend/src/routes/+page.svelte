@@ -91,34 +91,37 @@
 			</button>
 		</div>
 	</div>
-	{#each projects as project}
-		<div
-			tabindex="0"
-			role="button"
-			on:keydown={(event) => {
-				if (event.key === 'Enter' || event.key === ' ') {
-					event.preventDefault();
+
+		{#each projects as project}
+			<div
+				tabindex="0"
+				role="button"
+				on:keydown={(event) => {
+					if (event.key === 'Enter' || event.key === ' ') {
+						event.preventDefault();
+						goto(`/project?projectId=${project._id}`);
+					}
+				}}
+				on:click={() => {
 					goto(`/project?projectId=${project._id}`);
-				}
-			}}
-			on:click={() => {
-				goto(`/project?projectId=${project._id}`);
-			}}
-			class="card card-hover mx-5 my-3"
-		>
-			<section class="flex justify-between p-4">
-				<p>
-					{project.name}
-				</p>
-				<p class="mr-8">
-					{new Date(project.createdAt).toLocaleDateString()}
-				</p>
-			</section>
-		</div>
-	{/each}
+				}}
+				class="card card-hover mx-24 my-3"
+			>
+				<section class="flex justify-between p-4">
+					<p>
+						{project.name}
+					</p>
+					<p class="mr-8">
+						{new Date(project.createdAt).toLocaleDateString()}
+					</p>
+				</section>
+			</div>
+		{/each}
+
+
 
 	<Paginator
-		class="mx-5 my-3"
+		class="mx-24 my-3"
 		on:page={onPageChange}
 		on:amount={onAmountChange}
 		bind:settings={paginationSettings}
