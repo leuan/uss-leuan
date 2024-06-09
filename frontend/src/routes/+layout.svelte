@@ -61,12 +61,10 @@
 			<!-- {#if isLoading} -->
 			<AppBar>
 				<svelte:fragment slot="lead">
-					<strong class="strong">
 						<span
-							class="bg-gradient-to-br from-pink-500 to-violet-500 box-decoration-clone bg-clip-text text-transparent"
+							class="bg-gradient-to-br font-weight-100 from-pink-200 to-stone-700 box-decoration-clone bg-clip-text text-transparent"
 							>Welcome, {userProfile?.firstName}</span
 						>
-					</strong>
 					<strong class="text-xl uppercase"></strong>
 				</svelte:fragment>
 				<svelte:fragment slot="trail">

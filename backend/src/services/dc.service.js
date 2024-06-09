@@ -38,7 +38,6 @@ const publicMethods = {
         { projectId: projectId },
         { sort: { createdAt: -1 } }
       );
-
       return result.dependencies;
     } catch (e) {
       e.statusCode = 500;

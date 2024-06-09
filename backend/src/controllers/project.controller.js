@@ -13,7 +13,8 @@ const publicMethods = {
       const response = await projectService.getWithPagination(
         page,
         limit,
-        name
+        name,
+        req.user
       );
       return res.status(200).json(response);
     } catch (e) {
@@ -36,7 +37,13 @@ const publicMethods = {
       err.statusCode = 400;
       return next(err);
     }
-    
+
+    if (!scanFileName) {
+      const err = new Error("Invalid or missing name");
+      err.statusCode = 400;
+      return next(err);
+    }
+
     try {
       const projectId = await projectService.create(
         { name, zapUrl, scanFileName },
@@ -61,9 +68,57 @@ const publicMethods = {
 
     try {
       const project = await projectService.getById(objId);
-      return res.status(200).json({
-        result: project,
-      });
+      if (project) {
+        return res.status(200).json({
+          result: project,
+        });
+      } else {
+        return res.status(404).json({ message: "Not found" });
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  postEditProject: async (req, res, next) => {
+    const { projectId } = req.params;
+    const { name, zapUrl, scanFileName } = req.body;
+
+    log.info(projectId);
+    let objId;
+    try {
+      objId = objIdValidator(projectId);
+    } catch (e) {
+      next(e);
+    }
+
+    let valuesToChange = {};
+
+    if (zapUrl) {
+      try {
+        new URL(zapUrl);
+      } catch (_) {
+        const err = new Error("Invalid url");
+        err.statusCode = 400;
+        return next(err);
+      }
+
+      valuesToChange.zapUrl = zapUrl;
+    }
+
+    if (name) {
+      valuesToChange.name = name;
+    }
+
+    if (scanFileName) {
+      valuesToChange.scanFileName = scanFileName;
+    }
+
+    try {
+      await projectService.updateById(objId, valuesToChange);
+      return res
+        .status(200)
+        .json({ message: "Project modified successfully!" });
     } catch (e) {
       next(e);
     }

@@ -2,11 +2,13 @@ const loggingConfig = require("../config/logging");
 const log = require("pino")(loggingConfig);
 const DB = require("../config/db");
 const publicMethods = {
-  getWithPagination: async (page, limit, name) => {
+  getWithPagination: async (page, limit, name, user) => {
     //no of items to skip
     const skip = (page - 1) * limit;
 
-    const query = name ? { name: { $regex: name, $options: "i" } } : {};
+    const query = name
+      ? { name: { $regex: name, $options: "i" }, user: user.preferred_username }
+      : { user: user.preferred_username };
 
     try {
       const projectsDB = DB.Projects.getCollection();
