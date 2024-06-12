@@ -9,7 +9,7 @@
 	import MdiWeb from '~icons/mdi/web';
 	import { page } from '$app/stores';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
-	import IastScan from '$lib/components/IastScan.svelte';
+	import DastScan from '$lib/components/DastScan.svelte';
 	import { fetchWithToken } from '$lib/fetchWithToken';
 	import { onMount } from 'svelte';
 	import { AppRail, AppRailTile, ProgressRadial, getToastStore} from '@skeletonlabs/skeleton';
@@ -102,7 +102,7 @@
 			{#if currentTile === 0}
 				<SastScan project={project} refresh={fetchProject} />
 			{:else if currentTile === 1}
-				<IastScan project={project} refresh={fetchProject}/>
+				<DastScan project={project} refresh={fetchProject}/>
 			{:else if currentTile === 2}
 				<ScaScan project={project} refresh={fetchProject}/>
 			{/if}

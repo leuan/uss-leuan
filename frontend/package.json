@@ -41,6 +41,6 @@
 	"dependencies": {
 		"@floating-ui/dom": "1.6.5",
 		"highlight.js": "11.9.0",
-		"keycloak-js": "^24.0.5"
+		"keycloak-js": "24.0.5"
 	}
 }
